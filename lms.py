@@ -1,7 +1,7 @@
 # Linguagem de Programação II
 # AC08 ADS2D - LMS
-# alunos: nome1.sobrenome@aluno.faculdadeimpacta.com.br
-#         nome2.sobrenome@aluno.faculdadeimpacta.com.br
+# alunos: elias.dias@aluno.faculdadeimpacta.com.br
+#         leonardo.perez@aluno.faculdadeimpacta.com.br
 
 
 from sqlalchemy import (create_engine, MetaData, Column, Integer, String,
@@ -19,7 +19,7 @@ user = os.environ.get("DB_USER")
 pwd = os.environ.get("DB_PASS")
 server = os.environ.get("DB_HOST")
 
-engine = create_engine(f"mssql+pymssql://{user}:{pwd}@{server}/fit_alunos")
+engine = create_engine(f"mssql+pymssql://salas\\1900998:02082000@200.49.54.234/fit_alunos")
 Base = declarative_base(bind=engine, metadata=MetaData(schema="lms"))
 
 # Classes a serem criadas
@@ -32,19 +32,19 @@ class Usuario(Base):
     Classe Usuario: mapeia a tabela usuário do Banco de dados
     '''
     __tablename__ = 'Usuario'
-    idUse = Column('idUsuario', Integer, autoincrement=True, primary_key=True)
-    Login = Column('idLogin', String(30), unique=True,  nullable=False)
-    Senha = Column('Senha', String(30))
-    DtExpiracao = Column('DtExpiracao', Date, default='19000101')
-    alunos = relationship('Aluno', backref='Usuario')
-    professor = relationship('Professor', backref='Usuario')
-    Coordenador = relationship('Coordenador', backref='Usuario')
+    id_use = Column('idUsuario', Integer, autoincrement=True, primary_key=True)
+    login = Column('idLogin', String(30), unique=True,  nullable=False)
+    senha = Column('Senha', String(30))
+    dtExpiracao = Column('DtExpiracao', Date, default='19000101')
+    alunos = relationship('Aluno', backref='usuario')
+    professor = relationship('Professor', backref='usuario')
+    Coordenador = relationship('Coordenador', backref='usuario')
 
     def __repr__(self):
         '''
         Método de representação do objeto
         '''
-        return f'<Usuario: {self.Login}>'
+        return f'<Usuario: {self.login}>'
 
 
 class Aluno(Base):
@@ -54,20 +54,20 @@ class Aluno(Base):
     a backref perfil_aluno.
     '''
     __tablename__ = 'Aluno'
-    idAl = Column('idAluno', Integer, autoincrement=True, primary_key=True)
+    id_al = Column('idAluno', Integer, autoincrement=True, primary_key=True)
     idusuario = Column('idUsuario', Integer,
-                       ForeignKey('Usuario.idUse'),
+                       ForeignKey('Usuario.idUsuario'),
                        nullable=False)
-    Nome = Column('Nome', String(30), nullable=False)
-    Email = Column('Email', String(50), unique=True, nullable=False)
-    Celular = Column('Celular', String(14), unique=True, nullable=False)
-    RA = Column('RA', Integer, nullable=False)
+    nome = Column('Nome', String(30), nullable=False)
+    email = Column('Email', String(50), unique=True, nullable=False)
+    celular = Column('Celular', String(14), unique=True, nullable=False)
+    ra = Column('RA', Integer, nullable=False)
 
     def __repr__(self):
         '''
         Método de representação do objeto
         '''
-        return f"<Alunos: {self.Nome}>"
+        return f"<Alunos: {self.nome}>"
 
 
 class Professor(Base):
@@ -77,19 +77,20 @@ class Professor(Base):
     a backref perfil_professor.
     '''
     __tablename__ = 'Professor'
-    idPr = Column('idProfessor', Integer, autoincrement=True, primary_key=True)
+    id_pr = Column('idProfessor', Integer, autoincrement=True,
+                   primary_key=True)
     idusuario = Column('idUsuario', Integer,
-                       ForeignKey('Usuario.idUse'),
+                       ForeignKey('Usuario.idUsuario'),
                        nullable=True)
-    Email = Column('Email', String(50), nullable=False, unique=True)
-    Celular = Column('Celular', String(14), nullable=False, unique=True)
-    Apelido = Column('Apelido', String(15), nullable=False)
+    email = Column('Email', String(50), nullable=False, unique=True)
+    celular = Column('Celular', String(14), nullable=False, unique=True)
+    apelido = Column('Apelido', String(15), nullable=False)
 
     def __repr__(self):
         '''
         Método de representação do objeto
         '''
-        return f"<Professor: {self.Apelido}>"
+        return f"<Professor: {self.apelido}>"
 
 
 class Coordenador(Base):
@@ -101,24 +102,24 @@ class Coordenador(Base):
     a backref coordenador.
     '''
     __tablename__ = 'Coordenador'
-    idCo = Column('idCoordenador', Integer,
-                  autoincrement=True,
-                  primary_key=True)
+    id_co = Column('idCoordenador', Integer,
+                   autoincrement=True,
+                   primary_key=True)
     idusuario = Column('idUsuario', Integer,
-                       ForeignKey('Usuario.idUse'),
+                       ForeignKey('Usuario.idUsuario'),
                        nullable=False)
-    Nome = Column('Nome', String(30), nullable=False)
-    Email = Column('Email', String(50), nullable=False, unique=True)
-    Celular = Column('Celular', String(14),
+    nome = Column('Nome', String(30), nullable=False)
+    email = Column('Email', String(50), nullable=False, unique=True)
+    celular = Column('Celular', String(14),
                      nullable=False,
                      unique=True)
-    disciplina = relationship('Disciplina', backref='Coordenador')
+    disciplina = relationship('Disciplina', backref='coordenador')
 
     def __repr__(self):
         '''
         Método de representação do objeto
         '''
-        return f"<Coordenador: {self.Nome}>"
+        return f"<Coordenador: {self.nome}>"
 
 
 class Disciplina(Base):
@@ -128,36 +129,36 @@ class Disciplina(Base):
     PercentualTeórico, CargaHoraria e StatusDisciplina
     '''
     __tablename__ = 'Disciplina'
-    idDi = Column('idDisciplina', Integer,
-                  autoincrement=True,
-                  primary_key=True)
-    Nome = Column('Nome', String(50), unique=True, nullable=False)
-    DataDisciplina = Column('DataDisciplina', Date)
-    StatusDisciplina = Column('StatusDisciplina', String(8))
-    PlanoDeEnsino = Column('PlanoDeEnsino', String(500))
-    CargaHoraria = Column('CargaHoraria', Integer, nullable=False)
-    Competencias = Column('Competencias', String(500))
-    Habilidades = Column('Habilidades', String(500))
-    Ementa = Column('Ementa', String(500))
-    idCoordenador = Column('idCoordenador', Integer,
-                           ForeignKey('Coordenador.idCo'),
-                           nullable=False)
-    ConteudoProgramatico = Column('ConteudoProgramatico',
-                                  String(500))
-    BibliografiaBasica = Column('BibliografiaBasica',
-                                String(500))
-    BibliografiaComplementar = Column('BibliografiaComplementar',
-                                      String(500))
-    PercentualPratico = Column('PercentualPratico', Integer,
-                               nullable=False)
-    PercentualTeorico = Column('PercentualTeorico', Integer,
-                               nullable=False)
+    id_di = Column('idDisciplina', Integer,
+                   autoincrement=True,
+                   primary_key=True)
+    nome = Column('Nome', String(50), unique=True, nullable=False)
+    data_disciplina = Column('DataDisciplina', Date)
+    status_disciplina = Column('StatusDisciplina', String(8))
+    plano_de_ensino = Column('PlanoDeEnsino', String(500))
+    carga_horaria = Column('CargaHoraria', Integer, nullable=False)
+    competencias = Column('Competencias', String(500))
+    habilidades = Column('Habilidades', String(500))
+    ementa = Column('Ementa', String(500))
+    id_coordenador = Column('idCoordenador', Integer,
+                            ForeignKey('Coordenador.idCoordenador'),
+                            nullable=False)
+    conteudo_programatico = Column('ConteudoProgramatico',
+                                   String(500))
+    bibliografia_basica = Column('BibliografiaBasica',
+                                 String(500))
+    bibliografia_complementar = Column('BibliografiaComplementar',
+                                       String(500))
+    percentual_pratico = Column('PercentualPratico', Integer,
+                                nullable=False)
+    percentual_teorico = Column('PercentualTeorico', Integer,
+                                nullable=False)
 
     def __repr__(self):
         '''
         Método de representação do objeto
         '''
-        return f"<Disciplina: {self.Nome}>"
+        return f"<Disciplina: {self.nome}>"
 
 
 class Curso(Base):
@@ -165,17 +166,12 @@ class Curso(Base):
     Classe Curso: mapeia a tabela Curso do Banco de Dados.
     '''
     __tablename__ = 'Curso'
-    idCu = Column('idCurso', Integer,
-                  autoincrement=True, primary_key=True)
-    Nome = Column('Nome', String(50), nullable=False, unique=True)
+    id_cu = Column('idCurso', Integer,
+                   autoincrement=True, primary_key=True)
+    nome = Column('Nome', String(50), nullable=False, unique=True)
 
     def __repr__(self):
         '''
         Método de representação do objeto
         '''
-        return f"<Curso: {self.Nome}>"
-
-
-# with engine.connect() as conn:
-#     rs = conn.execute('SELECT * FROM lms.Disciplina')
-#     print(rs.keys())
+        return f"<Curso: {self.nome}>"
