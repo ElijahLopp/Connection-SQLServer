@@ -1,7 +1,7 @@
 # Linguagem de Programação II
 # AC09 ADS2D - Querys LMS
-# alunos: elias.dias@aluno.faculdadeimpacta.com.br
-#         leonardo.perez@aluno.faculdadeimpacta.com.br
+# alunos: ....
+#         ....
 
 from lms import (engine, Usuario, Aluno, Professor,
                  Coordenador, Disciplina, Curso)
