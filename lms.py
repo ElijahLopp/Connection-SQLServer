@@ -1,7 +1,7 @@
 # Linguagem de Programação II
 # AC08 ADS2D - LMS
-# alunos: elias.dias@aluno.faculdadeimpacta.com.br
-#         leonardo.perez@aluno.faculdadeimpacta.com.br
+# alunos: ....
+#         ....
 
 
 from sqlalchemy import (create_engine, MetaData, Column, Integer, String,
@@ -19,7 +19,7 @@ user = os.environ.get("DB_USER")
 pwd = os.environ.get("DB_PASS")
 server = os.environ.get("DB_HOST")
 
-engine = create_engine(f"mssql+pymssql://salas\\1900998:02082000@200.49.54.234/fit_alunos")
+engine = create_engine(f"<SCHEMA_CONNECTION>")
 Base = declarative_base(bind=engine, metadata=MetaData(schema="lms"))
 
 # Classes a serem criadas
